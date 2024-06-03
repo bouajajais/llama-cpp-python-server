@@ -13,23 +13,35 @@
             "source": "~/.ssh",
             "target": "/root/.ssh",
             "type": "bind"
+        },
+        {
+            "source": "~/.ssh",
+            "target": "/home/user/.ssh",
+            "type": "bind"
         }
     ],
-    "forwardPorts": [
-        "8000:8000"
-    ],
+    "remoteUser": "user",
+    "initializeCommand": "chmod +x ./set_user_guid.sh && ./set_user_guid.sh .env",
     "onCreateCommand": "cd /app/code && poetry install --no-root",
-    "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+    "overrideCommand": true,
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python",
+                "GitHub.copilot",
                 "ms-azuretools.vscode-docker",
-                "GitHub.copilot"
+                "ms-python.python"
             ],
             "settings": {
-                "python.defaultInterpreterPath": "/usr/bin/python"
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "python.pythonPath": "${containerEnv:PYTHON_PATH:-/usr/local/bin/python}",
+                "python.defaultInterpreterPath": "${containerEnv:PYTHON_PATH:-/usr/local/bin/python}"
             }
         }
+    },
+    "forwardPorts": [
+        "8000:8000"
+    ],
+    "postStartCommand": {
+        "git config": "git config --global --add safe.directory ${containerWorkspaceFolder}"
     }
 }

@@ -1,24 +1,31 @@
 name: llama-cpp-python-server
-
-# docker run --rm -d --gpus all -p 8000:8000 -v ./data/models:/app/data/models --mount type=bind,src=./secrets,dst=/run/secrets,readonly=true --env-file .docker.env --name llama-cpp-python-server llama-cpp-python-server "'python -m llama_cpp.server --model /app/data/models/llama-2-7b.Q4_K_M.gguf --n_gpu_layers 99 --host 0.0.0.0 --chat_format llama-2'"
 services:
   llama-cpp-python-server:
-    build: .
-    image: llama-cpp-python-server
-    command: "'python -m llama_cpp.server --model /app/data/models/llama-2-7b.Q4_K_M.gguf --n_gpu_layers 99 --host 0.0.0.0 --chat_format llama-2'"
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./data/models:/app/data/models
-      - type: bind
-        source: ./secrets
-        target: /run/secrets
-        read_only: true
-    env_file:
-      - .docker.env
+    build:
+      args:
+        - USER_UID=${USER_UID:?USER_UID not set}
+        - USER_GID=${USER_GID:?USER_GID not set}
+      context: .
     deploy:
       resources:
         reservations:
           devices:
-            - driver: nvidia
-              capabilities: [ gpu ]
+            - capabilities:
+                - gpu
+              driver: nvidia
+    env_file:
+      - ${SECRETS_ENV:-.secrets.env}
+    environment:
+      - USER_UID=${USER_UID:?USER_UID not set}
+      - USER_GID=${USER_GID:?USER_GID not set}
+    image: llama-cpp-python-server
+    ports:
+      - ${PORT:-8000}:8000
+    volumes:
+      - ${CONFIG_PATH:-./data/config}:/app/data/config
+      - ${MODELS_PATH:-./data/models}:/app/data/models
+      - read_only: true
+        source: ${SECRETS_PATH:-./secrets}
+        target: /run/secrets
+        type: bind
+    command: "poetry run python main.py"

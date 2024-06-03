@@ -6,7 +6,7 @@ It provides an easy way to start a llama-cpp-python server.
 
 ## Available tags
 
-Tags reflect the image of `ismailbouajaja/cuda-poetry` used and the version of `llama-cpp-python[server]` added on top in the form `${CUDA_TAG}-python${PYTHON_VERSION}-poetry${POETRY_VERSION}-llamacpp${LLAMA_CPP_VERSION}`.
+Tags reflect the image of `ismailbouajaja/cuda-poetry` used and the version of `llama-cpp-python[server]` added on top in the form `${CUDA_TAG}-python${PYTHON_VERSION}-poetry${POETRY_VERSION}-llamacpp${LLAMA_CPP_PYTHON_VERSION}`.
 
 Currently, `latest` corresponds to `12.4.1-cudnn-devel-ubuntu22.04-python3.12-poetry1.8-llamacpp0.2.76`.
 
@@ -15,10 +15,10 @@ Here are the TAGS currently available :
 CUDA_VERSIONS = ["12.3.2", "12.4.1"]
 CUDA_CUDNN_OPTIONS = ["", "-cudnn", "-cudnn9"] # -cudnn for 12.4.1; -cudnn9 for 12.3.2
 CUDA_TYPES = ["-devel"]
-CUDA_OS_OPTIONS = ["-ubuntu20.04", "-ubuntu22.04"]
-PYTHON_VERSIONS = ["3.10", "3.11", "3.12"]
-POETRY_VERSIONS = ["1.6", "1.7", "1.8"]
-LLAMA_CPP_VERSIONS = ["0.2.76"]
+CUDA_OS_OPTIONS = ["-ubuntu22.04"]
+PYTHON_VERSIONS = ["3.12"]
+POETRY_VERSIONS = ["1.8"]
+LLAMA_CPP_PYTHON_VERSIONS = ["0.2.76"]
 ```
 
 Other tags will be added later.

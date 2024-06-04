@@ -39,7 +39,7 @@
         }
     },
     "forwardPorts": [
-        "8000:8000"
+        "9000:8000"
     ],
     "postStartCommand": {
         "git config": "git config --global --add safe.directory ${containerWorkspaceFolder}"

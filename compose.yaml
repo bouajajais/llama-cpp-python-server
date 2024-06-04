@@ -20,7 +20,7 @@ services:
       - USER_GID=${USER_GID:?USER_GID not set}
     image: llama-cpp-python-server
     ports:
-      - ${PORT:-8000}:8000
+      - ${PORT:-9000}:8000
     volumes:
       - ${CONFIG_PATH:-./data/config}:/app/data/config
       - ${MODELS_PATH:-./data/models}:/app/data/models

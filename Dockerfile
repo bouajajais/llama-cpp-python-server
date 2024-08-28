@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Set the CUDA version to install
-ARG CUDA_TAG=12.4.1-devel-ubuntu22.04
+ARG CUDA_TAG=12.6.0-cudnn-devel-ubuntu22.04
 
 # Set the Python version to install
 ARG PYTHON_VERSION=3.12
@@ -14,20 +14,6 @@ FROM ismailbouajaja/cuda-poetry:${CUDA_TAG}-python${PYTHON_VERSION}-poetry${POET
 
 #### System-wide setup
 ## Put custom system-wide setup here
-
-# Desired version of llama-cpp-python
-ARG LLAMA_CPP_PYTHON_VERSION=0.2.76
-
-# Set the CMake arguments to build llama_cpp with hardware acceleration
-ARG CMAKE_ARGS="-DLLAMA_CUDA=on"
-
-# Set the CUDA Docker architecture
-ARG CUDA_DOCKER_ARCH=all
-
-# Set environment variables for llama_cpp
-ENV LLAMA_CPP_PYTHON_VERSION=${LLAMA_CPP_PYTHON_VERSION} \
-    CMAKE_ARGS=${CMAKE_ARGS} \
-    FORCE_CMAKE=1
 
 ## End of custom system-wide setup
 #### End of system-wide setup
@@ -77,6 +63,20 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Create a directory for the application
 WORKDIR /app/code
+
+# Desired version of llama-cpp-python
+ARG LLAMA_CPP_PYTHON_VERSION=0.2.89
+
+# Set the CMake arguments to build llama_cpp with hardware acceleration
+ARG CMAKE_ARGS="-DGGML_CUDA=on -DLLAVA_BUILD=off"
+
+# Set the CUDA Docker architecture
+ARG CUDA_DOCKER_ARCH=all
+
+# Set environment variables for llama_cpp
+ENV LLAMA_CPP_PYTHON_VERSION=${LLAMA_CPP_PYTHON_VERSION} \
+    CMAKE_ARGS=${CMAKE_ARGS} \
+    FORCE_CMAKE=1
 
 # Copy Poetry files and install dependencies
 COPY --chown=${USERNAME}:${USERNAME} code/pyproject.toml code/poetry.lock* ./

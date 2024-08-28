@@ -4,13 +4,13 @@ from itertools import product
 
 REPOSITORY = "ismailbouajaja"
 IMAGE_NAME = "llama-cpp-python-server"
-CUDA_VERSIONS = ["12.3.2", "12.4.1"]
-CUDA_CUDNN_OPTIONS = ["", "-cudnn", "-cudnn9"] # -cudnn for 12.4.1; -cudnn9 for 12.3.2
+CUDA_VERSIONS = ["12.3.2", "12.4.1", "12.5.1", "12.6.0"]
+CUDA_CUDNN_OPTIONS = ["", "-cudnn", "-cudnn9"] # -cudnn for 12.4.1 and later; -cudnn9 for 12.3.2
 CUDA_TYPES = ["-devel"] # -base, -runtime, -devel
 CUDA_OS_OPTIONS = ["-ubuntu22.04"]
-PYTHON_VERSIONS = ["3.12"]
+PYTHON_VERSIONS = ["3.10", "3.11", "3.12"]
 POETRY_VERSIONS = ["1.8"]
-LLAMA_CPP_PYTHON_VERSIONS = ["0.2.76"]
+LLAMA_CPP_PYTHON_VERSIONS = ["0.2.89"]
 
 VERBOSE = True
 
@@ -51,13 +51,12 @@ def build_and_push_image(image_name: str, tag: str, repository: str, **args: dic
         print(f"Error building and pushing image {IMAGE_NAME}:{tag} to {REPOSITORY}: {e}")
 
 def main():
-    # with concurrent.futures.ThreadPoolExecutor() as executor:
-    #     futures = []
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = []
         for cuda_version, cudnn_option, cuda_type, cuda_os, python_version, poetry_version, llama_cpp_version in product(CUDA_VERSIONS, CUDA_CUDNN_OPTIONS, CUDA_TYPES, CUDA_OS_OPTIONS, PYTHON_VERSIONS, POETRY_VERSIONS, LLAMA_CPP_PYTHON_VERSIONS):
-            if cuda_version == "12.3.2" and cudnn_option == "-cudnn":
+            if int(cuda_version == "12.3.2") + int(cudnn_option == "-cudnn9") == 1:
                 continue
-            if cuda_version == "12.4.1" and cudnn_option == "-cudnn9":
-                continue
+            
             cuda_tag = f"{cuda_version}{cudnn_option}{cuda_type}{cuda_os}"
             args = {
                 "CUDA_TAG": cuda_tag,
@@ -68,11 +67,11 @@ def main():
                 "USER_GID": "1000"
             }
             tag = f"{cuda_tag}-python{python_version}-poetry{poetry_version}-llamacpp{llama_cpp_version}"
-            build_and_push_image(IMAGE_NAME, tag, REPOSITORY, **args)
-            # futures.append(executor.submit(build_and_push_image, IMAGE_NAME, tag, REPOSITORY, **args))
+            # build_and_push_image(IMAGE_NAME, tag, REPOSITORY, **args)
+            futures.append(executor.submit(build_and_push_image, IMAGE_NAME, tag, REPOSITORY, **args))
         
         # Wait for all tasks to complete
-        # concurrent.futures.wait(futures)
+        concurrent.futures.wait(futures)
 
 if __name__ == "__main__":
     main()

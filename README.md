@@ -6,19 +6,19 @@ It provides an easy way to start a llama-cpp-python server.
 
 ## Available tags
 
-Tags reflect the image of `ismailbouajaja/cuda-poetry` used and the version of `llama-cpp-python[server]` added on top in the form `${CUDA_TAG}-python${PYTHON_VERSION}-poetry${POETRY_VERSION}-llamacpp${LLAMA_CPP_PYTHON_VERSION}`.
+Tags reflect the image of `ismailbouajaja/cuda-poetry` used and the version of `llama-cpp-python[server]` added on top in the form `llama-cpp-python-server__${LLAMA_CPP_PYTHON_VERSION}--nvidia__cuda__${CUDA_TAG}--poetry__${POETRY_VERSION}--python__${PYTHON_VERSION}`.
 
-Currently, `latest` corresponds to `12.4.1-cudnn-devel-ubuntu22.04-python3.12-poetry1.8-llamacpp0.2.76`.
+Currently, `latest` corresponds to `llama-cpp-python-server__0.3.2--nvidia__cuda__12.6.2-cudnn-devel-ubuntu22.04--poetry__1.8--python__3.10`.
 
 Here are the TAGS currently available :
 ```Python
-CUDA_VERSIONS = ["12.3.2", "12.4.1"]
-CUDA_CUDNN_OPTIONS = ["", "-cudnn", "-cudnn9"] # -cudnn for 12.4.1; -cudnn9 for 12.3.2
+CUDA_VERSIONS = ["12.6.2"]
+CUDA_CUDNN_OPTIONS = ["-cudnn"]
 CUDA_TYPES = ["-devel"]
 CUDA_OS_OPTIONS = ["-ubuntu22.04"]
-PYTHON_VERSIONS = ["3.12"]
+PYTHON_VERSIONS = ["3.10"]
 POETRY_VERSIONS = ["1.8"]
-LLAMA_CPP_PYTHON_VERSIONS = ["0.2.76"]
+LLAMA_CPP_PYTHON_VERSIONS = ["0.3.2"]
 ```
 
 Other tags will be added later.
@@ -30,7 +30,7 @@ To use this image from Docker Hub, run the following command :
 ```bash
 docker run --rm -it \
     --gpus all \
-    -p 8000:8000 \
+    -p 9369:8000 \
     -e USER_UID=$(id -u) \
     -e USER_GID=$(id -g) \
     -v /optional/path/to/config.json:/app/data/config/config.json \
@@ -57,21 +57,21 @@ To clone the github repository, follow these steps :
 ### Build and run the Dockerfile
 2. Build the Docker image using the provided Dockerfile:
     ```bash
-    docker build --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g) -t llama-cpp-python-server .
+    docker build --target prod -t llama-cpp-python-server .
     ```
 
     The `docker build` command accepts the following arguments:
-    - `ARG CUDA_TAG=12.4.1-cudnn-devel-ubuntu22.04`: The CUDA base image tag.
-    - `ARG PYTHON_VERSION=3.12`: The Python version to install.
+    - `ARG LLAMA_CPP_PYTHON_VERSION=0.3.2`: The version of `llama-cpp-python[server]` to install.
+    - `ARG CUDA_TAG=12.6.2-cudnn-devel-ubuntu22.04`: The CUDA base image tag.
     - `ARG POETRY_VERSION=1.8`: The Poetry version to install.
-    - `ARG LLAMA_CPP_PYTHON_VERSION=0.2.76`: The version of `llama-cpp-python[server]` to install.
-    - `ARG CMAKE_ARGS="-DLLAMA_CUDA=on"`: Options for installing `llama-cpp-python[server]`.
+    - `ARG PYTHON_VERSION=3.12`: The Python version to install.
+    - `ARG CMAKE_ARGS="-DGGML_CUDA=on -DLLAVA_BUILD=off"`: Options for installing `llama-cpp-python[server]`.
 
 3. Run the Docker container:
     ```bash
     docker run --rm -it \
         --gpus all \
-        -p 8000:8000 \
+        -p 9369:8000 \
         -e USER_UID=$(id -u) \
         -e USER_GID=$(id -g) \
         -v /optional/path/to/config.json:/app/data/config/config.json \
@@ -84,13 +84,14 @@ To clone the github repository, follow these steps :
     ```bash
     CONFIG_PATH=/optional/path/to/config.json
     MODELS_PATH=/path/to/models/folder
+    LOGS_PATH=/path/to/logs/folder
     ```
 
 3. Run the following commands :
     ```bash
     chmod +x ./set_user_guid.sh
-    ./set_user_guid.sh .compose.env
-    docker compose --env-file .compose.env up --build
+    ./set_user_guid.sh
+    docker compose up --build
     ```
 
 ## Config file

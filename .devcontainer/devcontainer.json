@@ -1,29 +1,19 @@
 {
-    "name": "llama-cpp-python-server",
-    "dockerComposeFile": "../compose.yaml",
-    "service": "llama-cpp-python-server",
+    "name": "dev-llama-cpp-python-server",
+    "dockerComposeFile": "../compose.dev.yaml",
+    "service": "dev-llama-cpp-python-server",
     "workspaceFolder": "/app",
     "mounts": [
         {
             "source": "./",
             "target": "/app",
             "type": "bind"
-        },
-        {
-            "source": "~/.ssh",
-            "target": "/root/.ssh",
-            "type": "bind"
-        },
-        {
-            "source": "~/.ssh",
-            "target": "/home/user/.ssh",
-            "type": "bind"
         }
     ],
     "remoteUser": "user",
-    "initializeCommand": "chmod +x ./set_user_guid.sh && ./set_user_guid.sh .env",
-    "onCreateCommand": "cd /app/code && poetry install --no-root",
+    "containerUser": "user",
     "overrideCommand": true,
+    "postAttachCommand": "sudo chown -R user:user .",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -33,15 +23,14 @@
             ],
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash",
-                "python.pythonPath": "${containerEnv:PYTHON_PATH:-/usr/local/bin/python}",
-                "python.defaultInterpreterPath": "${containerEnv:PYTHON_PATH:-/usr/local/bin/python}"
+                "python.pythonPath": "${containerEnv:PYTHON_PATH:-/usr/local/bin/python}"
             }
         }
     },
-    "forwardPorts": [
-        "9000:8000"
-    ],
     "postStartCommand": {
         "git config": "git config --global --add safe.directory ${containerWorkspaceFolder}"
-    }
+    },
+    "forwardPorts": [
+        "9369:8000"
+    ]
 }

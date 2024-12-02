@@ -1,10 +1,10 @@
-name: llama-cpp-python-server
+name: dev-llama-cpp-python-server
 services:
-  llama-cpp-python-server:
+  dev-llama-cpp-python-server:
     build:
       context: .
       dockerfile: Dockerfile
-      target: prod
+      target: dev
     deploy:
       resources:
         reservations:
@@ -13,14 +13,10 @@ services:
                 - gpu
               count: 1
               driver: nvidia
-    env_file:
-      - .user_guid.env
-    image: llama-cpp-python-server
+    image: dev-llama-cpp-python-server
     ports:
       - 9369:8000
-    stdin_open: true
-    tty: true
     volumes:
-      - ${MODELS_PATH:-./data/models}:/app/data/models
+      - ${MODELS_PATH:-~/data/llm_models}:/app/data/models
       - ${CONFIG_PATH:-./config/config.json}:/app/config/config.json
       - ${LOGS_PATH:-./data/logs}:/app/data/logs

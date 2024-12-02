@@ -1,7 +1,7 @@
 import subprocess
 from setup_config_file import create_config_file, process_config_file
 
-CONFIG_PATH = "/app/data/config/config.json"
+CONFIG_PATH = "/app/config/config.json"
 MODELS_DIR = "/app/data/models"
 DEFAULT_PORT = 8000
 DEFAULT_N_GPU_LAYERS = 99

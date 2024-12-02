@@ -28,14 +28,7 @@ Other tags will be added later.
 To use this image from Docker Hub, run the following command :
 
 ```bash
-docker run --rm -it \
-    --gpus all \
-    -p 9369:8000 \
-    -e USER_UID=$(id -u) \
-    -e USER_GID=$(id -g) \
-    -v /optional/path/to/config.json:/app/data/config/config.json \
-    -v /path/to/models/folder:/app/data/models \
-    ismailbouajaja/llama-cpp-python-server
+docker run --rm -it --gpus all -p 9369:8000 -e USER_UID=$(id -u) -e USER_GID=$(id -g) -v /optional/path/to/config.json:/app/config/config.json -v /path/to/models/folder:/app/data/models ismailbouajaja/llama-cpp-python-server
 ```
 
 This will start a `llama-cpp-python` server based on the provided `config.json` and using the models located in the provided `models` folder.
@@ -69,14 +62,7 @@ To clone the github repository, follow these steps :
 
 3. Run the Docker container:
     ```bash
-    docker run --rm -it \
-        --gpus all \
-        -p 9369:8000 \
-        -e USER_UID=$(id -u) \
-        -e USER_GID=$(id -g) \
-        -v /optional/path/to/config.json:/app/data/config/config.json \
-        -v /path/to/models/folder:/app/data/models \
-        llama-cpp-python-server
+    docker run --rm -it --gpus all -p 9369:8000 -e USER_UID=$(id -u) -e USER_GID=$(id -g) -v /optional/path/to/config.json:/app/config/config.json -v /path/to/models/folder:/app/data/models llama-cpp-python-server
     ```
 
 ### Docker compose up
